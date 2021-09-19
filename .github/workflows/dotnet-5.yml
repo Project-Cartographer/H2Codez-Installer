@@ -34,7 +34,7 @@ jobs:
     if: |
       github.event.action != 'pull_request' &&
       github.ref == 'refs/heads/main' &&
-      github.repository == 'Project-Cartographer/H2Codez-Installer/'
+      github.repository == 'Project-Cartographer/H2Codez-Installer'
     needs: build
     runs-on: ubuntu-latest
     steps:
