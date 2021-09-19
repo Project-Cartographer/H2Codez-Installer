@@ -98,7 +98,7 @@ namespace H2CodezPatcher
         static string GetInstallPath()
         {
             string? installPath = null;
-            while (!File.Exists(installPath))
+            while (!Directory.Exists(installPath))
             {
                 Console.WriteLine("Enter install path:");
                 installPath = Console.ReadLine();
