@@ -30,3 +30,8 @@
 *.exe
 *.out
 *.app
+
+# build artifacts
+H2CodezPatcher/bin
+H2CodezPatcher/obj
+H2CodezPatcher/.vs
