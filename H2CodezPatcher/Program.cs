@@ -50,19 +50,19 @@ namespace H2CodezPatcher
 
         internal bool check_files( ref file_list files_to_patch)
         {
-            string h2tool = CalculateMD5(BasePath + "h2tool.exe");
+            string h2tool = CalculateMD5(Path.Combine(BasePath, "h2tool.exe"));
             if (h2tool == "dc221ca8c917a1975d6b3dd035d2f862")
                 files_to_patch |= file_list.tool;
             else if (h2tool != "f81c24da93ce8d114caa8ba0a21c7a63")
                 return false;
 
-            string h2sapien = CalculateMD5(BasePath + "h2sapien.exe");
+            string h2sapien = CalculateMD5(Path.Combine(BasePath, "h2sapien.exe"));
             if (h2sapien == "d86c488b7c8f64b86f90c732af01bf50")
                 files_to_patch |= file_list.sapien;
             else if (h2sapien != "975c0d0ad45c1687d11d7d3fdfb778b8")
                 return false;
 
-            string h2guerilla = CalculateMD5(BasePath + "h2guerilla.exe");
+            string h2guerilla = CalculateMD5(Path.Combine(BasePath, "h2guerilla.exe"));
             if (h2guerilla == "ce3803cc90e260b3dc59854d89b3ea88")
                 files_to_patch |= file_list.guerilla;
             else if (h2guerilla != "55b09d5a6c8ecd86988a5c0f4d59d7ea")
@@ -77,7 +77,7 @@ namespace H2CodezPatcher
             using (FileStream unpatched_file = new FileStream(BasePath + name, FileMode.Open, FileAccess.Read, FileShare.Read))
             using (FileStream patched_file = new FileStream(BasePath + name + ".patched", FileMode.Create))
                 BsDiff.BinaryPatchUtility.Apply(unpatched_file, () => new MemoryStream(patch_data), patched_file);
-            ForceMove(BasePath + name, BasePath + "backup\\" + name);
+            ForceMove(BasePath + name, Path.Combine(BasePath, "backup",  name));
             ForceMove(BasePath + name + ".patched", BasePath + name);
         }
 
@@ -107,7 +107,7 @@ namespace H2CodezPatcher
         }
         static void Main(string[] args)
         {
-            string installPath = GetInstallPath();
+            string installPath = Path.GetFullPath(GetInstallPath()) + "\\";
             Console.WriteLine($"Installing h2codez to {installPath}");
             Installer installer = new(installPath);
             Installer.file_list files_to_patch = Installer.file_list.none;
@@ -118,11 +118,16 @@ namespace H2CodezPatcher
             }
             if (files_to_patch == Installer.file_list.none)
             {
-                Console.WriteLine("No files to patch, h2codez installed already!");
-                return;
+                Console.WriteLine("No files to patch, h2codez applied already!");
             }
-            var wc = new WebClient();
-            installer.ApplyPatches(files_to_patch, wc);
+            else
+            {
+                var wc = new WebClient();
+                installer.ApplyPatches(files_to_patch, wc);
+                Console.WriteLine("H2codez patches applied!");
+            }
+            Console.WriteLine("Install is patched to use h2codez download h2codez.dll if you haven't already!");
+            Console.WriteLine(@"See https://github.com/Project-Cartographer/H2Codez/releases for latest releases");
         }
     }
 }
